@@ -1,0 +1,102 @@
+[
+  {
+    "id": "TEST-001",
+    "number": "4242424242424242",
+    "month": "12",
+    "year": "2030",
+    "pin": "1234",
+    "used": false,
+    "claimedBy": null,
+    "claimedAt": null
+  },
+  {
+    "id": "TEST-002",
+    "number": "4000000000000002",
+    "month": "12",
+    "year": "2030",
+    "pin": "2345",
+    "used": false,
+    "claimedBy": null,
+    "claimedAt": null
+  },
+  {
+    "id": "TEST-003",
+    "number": "5555555555554444",
+    "month": "12",
+    "year": "2030",
+    "pin": "3456",
+    "used": false,
+    "claimedBy": null,
+    "claimedAt": null
+  },
+  {
+    "id": "TEST-004",
+    "number": "4000002500003155",
+    "month": "12",
+    "year": "2030",
+    "pin": "4567",
+    "used": false,
+    "claimedBy": null,
+    "claimedAt": null
+  },
+  {
+    "id": "TEST-005",
+    "number": "5200828282828210",
+    "month": "12",
+    "year": "2030",
+    "pin": "5678",
+    "used": false,
+    "claimedBy": null,
+    "claimedAt": null
+  },
+  {
+    "id": "TEST-006",
+    "number": "4000000000000069",
+    "month": "12",
+    "year": "2030",
+    "pin": "6789",
+    "used": false,
+    "claimedBy": null,
+    "claimedAt": null
+  },
+  {
+    "id": "TEST-007",
+    "number": "6011000000000004",
+    "month": "12",
+    "year": "2030",
+    "pin": "7890",
+    "used": false,
+    "claimedBy": null,
+    "claimedAt": null
+  },
+  {
+    "id": "TEST-008",
+    "number": "378282246310005",
+    "month": "12",
+    "year": "2030",
+    "pin": "8901",
+    "used": false,
+    "claimedBy": null,
+    "claimedAt": null
+  },
+  {
+    "id": "TEST-009",
+    "number": "371449635398431",
+    "month": "12",
+    "year": "2030",
+    "pin": "9012",
+    "used": false,
+    "claimedBy": null,
+    "claimedAt": null
+  },
+  {
+    "id": "TEST-010",
+    "number": "6011111111111117",
+    "month": "12",
+    "year": "2030",
+    "pin": "1122",
+    "used": false,
+    "claimedBy": null,
+    "claimedAt": null
+  }
+]
