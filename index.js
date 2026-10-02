@@ -56,7 +56,6 @@ client.on("messageCreate", async (message) => {
         `💳 **CARD NUMBER:** \`${card.number}\`\n` +
         `📅 **CARD DATE:** \`${card.month}/${card.year}\`\n` +
         `🔒 **CARD PIN:** \`${card.pin}\`\n\n` +
-        `⚠️ TEST/DEMO CARD — NO REAL FUNDS OR PAYMENT CAPABILITY`
       );
     } catch (err) {
       return message.reply("❌ I couldn't DM you. Please enable DMs from server members and try again.");
