@@ -1,37 +1,51 @@
-const http = require("http");
+const {
+  Client,
+  GatewayIntentBits,
+  PermissionsBitField
+} = require("discord.js");
 
-const PORT = process.env.PORT || 10000;
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
-  res.end("Discord bot is running.");
-});
-
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`HTTP server listening on port ${PORT}`);
-});
-
-const { Client, GatewayIntentBits, PermissionsBitField } = require("discord.js");
 const fs = require("fs");
+const path = require("path");
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.DirectMessages
+  ],
   partials: ["CHANNEL"]
 });
 
-const CARDS_FILE = "./cards.js";
-const CLAIMS_FILE = "./claims.json";
+const CARDS_FILE = path.join(__dirname, "cards.js");
+const CLAIMS_FILE = path.join(__dirname, "claims.json");
 
 function readCards() {
-  if (!fs.existsSync(CARDS_FILE)) return [];
+  if (!fs.existsSync(CARDS_FILE)) {
+    return [];
+  }
+
   return fs.readFileSync(CARDS_FILE, "utf8")
     .split(/\r?\n/)
     .map(line => line.trim())
     .filter(line => line && !line.startsWith("//"))
     .map((line, index) => {
       const [number, month, year, pin] = line.split("|");
-      return { id: `card-${index + 1}`, number, month, year, pin };
+
+      return {
+        id: `card-${index + 1}`,
+        number,
+        month,
+        year,
+        pin
+      };
     })
-    .filter(card => card.number && card.month && card.year && card.pin);
+    .filter(card =>
+      card.number &&
+      card.month &&
+      card.year &&
+      card.pin
+    );
 }
 
 function readClaims() {
@@ -39,15 +53,21 @@ function readClaims() {
     fs.writeFileSync(CLAIMS_FILE, "{}");
     return {};
   }
+
   try {
-    return JSON.parse(fs.readFileSync(CLAIMS_FILE, "utf8"));
+    return JSON.parse(
+      fs.readFileSync(CLAIMS_FILE, "utf8")
+    );
   } catch {
     return {};
   }
 }
 
 function writeClaims(data) {
-  fs.writeFileSync(CLAIMS_FILE, JSON.stringify(data, null, 2));
+  fs.writeFileSync(
+    CLAIMS_FILE,
+    JSON.stringify(data, null, 2)
+  );
 }
 
 client.once("ready", () => {
@@ -55,23 +75,41 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", async (message) => {
-  if (message.author.bot || !message.content.trim().startsWith("!")) return;
+  if (
+    message.author.bot ||
+    !message.content.trim().startsWith("!")
+  ) {
+    return;
+  }
 
   const args = message.content.trim().split(/\s+/);
   const command = args[0].toLowerCase();
 
+  // !deploycc
   if (command === "!deploycc") {
     const claims = readClaims();
 
     if (claims[message.author.id]) {
-      return message.reply("❌ You have already received your test card. Each user can receive only one card.");
+      return message.reply(
+        "❌ You have already received your test card. Each user can receive only one card."
+      );
     }
 
     const cards = readCards();
-    const usedIds = new Set(Object.values(claims).map(c => c.cardId));
-    const card = cards.find(c => !usedIds.has(c.id));
 
-    if (!card) return message.reply("❌ No test cards are available right now.");
+    const usedIds = new Set(
+      Object.values(claims).map(c => c.cardId)
+    );
+
+    const card = cards.find(
+      c => !usedIds.has(c.id)
+    );
+
+    if (!card) {
+      return message.reply(
+        "❌ No test cards are available right now."
+      );
+    }
 
     try {
       await message.author.send(
@@ -82,7 +120,9 @@ client.on("messageCreate", async (message) => {
         `⚠️ **TEST/DEMO CARD — NO REAL FUNDS OR PAYMENT CAPABILITY**`
       );
     } catch {
-      return message.reply("❌ I couldn't DM you. Please enable DMs from server members and try again.");
+      return message.reply(
+        "❌ I couldn't DM you. Please enable DMs from server members and try again."
+      );
     }
 
     claims[message.author.id] = {
@@ -91,34 +131,68 @@ client.on("messageCreate", async (message) => {
     };
 
     writeClaims(claims);
-    return message.reply("✅ **Card info sent in your DM!** 📩");
+
+    return message.reply(
+      "✅ **Card info sent in your DM!** 📩"
+    );
   }
 
+  // !stock
   if (command === "!stock") {
     const cards = readCards();
     const claims = readClaims();
-    const usedIds = new Set(Object.values(claims).map(c => c.cardId));
-    const available = cards.filter(c => !usedIds.has(c.id)).length;
-    return message.reply(`📦 Available test cards: **${available}**`);
+
+    const usedIds = new Set(
+      Object.values(claims).map(c => c.cardId)
+    );
+
+    const available = cards.filter(
+      c => !usedIds.has(c.id)
+    ).length;
+
+    return message.reply(
+      `📦 Available test cards: **${available}**`
+    );
   }
 
+  // !resetuser
   if (command === "!resetuser") {
-    if (!message.member?.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      return message.reply("❌ Administrator permission required.");
+    if (
+      !message.member?.permissions.has(
+        PermissionsBitField.Flags.Administrator
+      )
+    ) {
+      return message.reply(
+        "❌ Administrator permission required."
+      );
     }
 
     const user = message.mentions.users.first();
-    if (!user) return message.reply("Usage: `!resetuser @user`");
+
+    if (!user) {
+      return message.reply(
+        "Usage: \`!resetuser @user\`"
+      );
+    }
 
     const claims = readClaims();
-    if (!claims[user.id]) return message.reply("❌ That user has no card claim.");
+
+    if (!claims[user.id]) {
+      return message.reply(
+        "❌ That user has no card claim."
+      );
+    }
 
     delete claims[user.id];
+
     writeClaims(claims);
 
-    return message.reply(`✅ Test-card claim reset for ${user}.`);
+    return message.reply(
+      `✅ Test-card claim reset for ${user}.`
+    );
   }
 
+  // !helpcc
   if (command === "!helpcc") {
     return message.reply(
       "**Test Card Bot Commands**\n" +
@@ -129,4 +203,16 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-client.login(process.env.DISCORD_TOKEN);
+const token = process.env.DISCORD_TOKEN;
+
+if (!token) {
+  console.error(
+    "❌ DISCORD_TOKEN environment variable is missing."
+  );
+  process.exit(1);
+}
+
+client.login(token).catch(error => {
+  console.error("❌ Discord login failed:", error.message);
+  process.exit(1);
+});
